@@ -1,6 +1,7 @@
 package main
 
 import (
+	"runtime"
 	"sync"
 	"unsafe"
 )
@@ -19,6 +20,8 @@ func NewCOWBuffer(data []byte) COWBuffer { // создать буффер с о�
 		counter: &counter,
 		mx:      &sync.RWMutex{},
 	}
+
+	runtime.SetFinalizer(cowBuffer, (*COWBuffer).Close)
 
 	return *cowBuffer
 }
@@ -57,14 +60,11 @@ func (b *COWBuffer) Update(index int, value byte) bool { // изменить о�
 	if *b.counter > 1 {
 		*b.counter--
 
-		oldData := b.data
-		b.data = make([]byte, len(oldData))
-		copy(b.data, oldData)
+		*b = NewCOWBuffer(b.data)
 
-		counter := 1
-		b.counter = &counter
-
-		b.mx = new(sync.RWMutex)
+		newData := make([]byte, len(b.data))
+		copy(newData, b.data)
+		b.data = newData
 	}
 
 	b.data[index] = value
@@ -76,5 +76,5 @@ func (b *COWBuffer) String() string { // сконвертировать буфф
 	b.mx.RLock()
 	defer b.mx.RUnlock()
 
-	return unsafe.String(unsafe.SliceData(b.data), len(b.data))
+	return *(*string)(unsafe.Pointer(&b.data))
 }

@@ -54,82 +54,82 @@ func WithName(name string) func(*GamePerson) {
 			n = 42
 		}
 
-		person.userName.nameLen = uint8(n)
-		copy(person.userName.userName[:n], name[:n])
+		person.UserName.NameLen = uint8(n)
+		copy(person.UserName.UserName[:n], name[:n])
 	}
 }
 
 func WithCoordinates(x, y, z int) func(*GamePerson) {
 	return func(person *GamePerson) {
-		person.x = int32(x)
-		person.y = int32(y)
-		person.z = int32(z)
+		person.CoorX = int32(x)
+		person.CoorY = int32(y)
+		person.CoorZ = int32(z)
 	}
 }
 
 func WithGold(gold int) func(*GamePerson) {
 	return func(person *GamePerson) {
-		person.familyGold = setNewData(person.familyGold, uint32(gold), goldStart, goldBitsCount)
+		person.FamilyGold = setNewData(person.FamilyGold, uint32(gold), goldStart, goldBitsCount)
 	}
 }
 
 func WithMana(mana int) func(*GamePerson) {
 	return func(person *GamePerson) {
-		person.weaponHomeRespectMana = setNewData(person.weaponHomeRespectMana, uint16(mana), manaStart, manaBitsCount)
+		person.WeaponHomeRespectMana = setNewData(person.WeaponHomeRespectMana, uint16(mana), manaStart, manaBitsCount)
 	}
 }
 
 func WithHealth(health int) func(*GamePerson) {
 	return func(person *GamePerson) {
-		person.typeStrengthHealth = setNewData(person.typeStrengthHealth, uint16(health), healthStart, healthBitsCount)
+		person.TypeStrengthHealth = setNewData(person.TypeStrengthHealth, uint16(health), healthStart, healthBitsCount)
 	}
 }
 
 func WithRespect(respect int) func(*GamePerson) {
 	return func(person *GamePerson) {
-		person.weaponHomeRespectMana = setNewData(person.weaponHomeRespectMana, uint16(respect), respectStart, respectBitsCount)
+		person.WeaponHomeRespectMana = setNewData(person.WeaponHomeRespectMana, uint16(respect), respectStart, respectBitsCount)
 	}
 }
 
 func WithStrength(strength int) func(*GamePerson) {
 	return func(person *GamePerson) {
-		person.typeStrengthHealth = setNewData(person.typeStrengthHealth, uint16(strength), strengthStart, strengthBitsCount)
+		person.TypeStrengthHealth = setNewData(person.TypeStrengthHealth, uint16(strength), strengthStart, strengthBitsCount)
 	}
 }
 
 func WithExperience(experience int) func(*GamePerson) {
 	return func(person *GamePerson) {
-		person.experienceLevel = setNewData(person.experienceLevel, uint8(experience), experienceStart, experienceBitsCount)
+		person.ExperienceLevel = setNewData(person.ExperienceLevel, uint8(experience), experienceStart, experienceBitsCount)
 	}
 }
 
 func WithLevel(level int) func(*GamePerson) {
 	return func(person *GamePerson) {
-		person.experienceLevel = setNewData(person.experienceLevel, uint8(level), levelStart, levelBitsCount)
+		person.ExperienceLevel = setNewData(person.ExperienceLevel, uint8(level), levelStart, levelBitsCount)
 	}
 }
 
 func WithHouse() func(*GamePerson) {
 	return func(person *GamePerson) {
-		person.weaponHomeRespectMana = setNewData(person.weaponHomeRespectMana, 1, houseStart, houseBitsCount)
+		person.WeaponHomeRespectMana = setNewData(person.WeaponHomeRespectMana, 1, houseStart, houseBitsCount)
 	}
 }
 
 func WithGun() func(*GamePerson) {
 	return func(person *GamePerson) {
-		person.weaponHomeRespectMana = setNewData(person.weaponHomeRespectMana, 1, weaponStart, weaponBitsCount)
+		person.WeaponHomeRespectMana = setNewData(person.WeaponHomeRespectMana, 1, weaponStart, weaponBitsCount)
 	}
 }
 
 func WithFamily() func(*GamePerson) {
 	return func(person *GamePerson) {
-		person.familyGold = setNewData(person.familyGold, 1, familyStart, familyBitsCount)
+		person.FamilyGold = setNewData(person.FamilyGold, 1, familyStart, familyBitsCount)
 	}
 }
 
 func WithType(personType int) func(*GamePerson) {
 	return func(person *GamePerson) {
-		person.typeStrengthHealth = setNewData(person.typeStrengthHealth, uint16(personType), typeStart, typeBitsCount)
+		person.TypeStrengthHealth = setNewData(person.TypeStrengthHealth, uint16(personType), typeStart, typeBitsCount)
 	}
 }
 
@@ -158,22 +158,23 @@ const (
 )
 
 type userNameType struct {
-	userName [42]byte
-	nameLen  uint8
+	UserName [42]byte `json:"username"`
+	NameLen  uint8    `json:"name"`
 }
 
 type GamePerson struct {
-	userName        userNameType
-	experienceLevel uint8
+	UserName        userNameType `json:"user_name"`
+	ExperienceLevel uint8        `json:"experience_level"`
 
-	x int32
-	y int32
-	z int32
+	CoorX int32 `json:"coor_x"`
+	CoorY int32 `json:"coor_y"`
+	CoorZ int32 `json:"coor_z"`
 
-	familyGold uint32
+	// make serialization for family and gold separately
+	FamilyGold uint32 `json:"family_gold"`
 
-	weaponHomeRespectMana uint16
-	typeStrengthHealth    uint16
+	WeaponHomeRespectMana uint16 `json:"weapon_home_respect_mana"`
+	TypeStrengthHealth    uint16 `json:"type_strength_health"`
 }
 
 func NewGamePerson(options ...Option) GamePerson {
@@ -187,61 +188,61 @@ func NewGamePerson(options ...Option) GamePerson {
 }
 
 func (p *GamePerson) Name() string {
-	return string(p.userName.userName[:p.userName.nameLen])
+	return string(p.UserName.UserName[:p.UserName.NameLen])
 }
 
 func (p *GamePerson) X() int {
-	return int(p.x)
+	return int(p.CoorX)
 }
 
 func (p *GamePerson) Y() int {
-	return int(p.y)
+	return int(p.CoorY)
 }
 
 func (p *GamePerson) Z() int {
-	return int(p.z)
+	return int(p.CoorZ)
 }
 
 func (p *GamePerson) Gold() int {
-	return getData(p.familyGold, goldStart, goldBitsCount)
+	return getData(p.FamilyGold, goldStart, goldBitsCount)
 }
 
 func (p *GamePerson) Mana() int {
-	return getData(p.weaponHomeRespectMana, manaStart, manaBitsCount)
+	return getData(p.WeaponHomeRespectMana, manaStart, manaBitsCount)
 }
 
 func (p *GamePerson) Health() int {
-	return getData(p.typeStrengthHealth, healthStart, healthBitsCount)
+	return getData(p.TypeStrengthHealth, healthStart, healthBitsCount)
 }
 
 func (p *GamePerson) Respect() int {
-	return getData(p.weaponHomeRespectMana, respectStart, respectBitsCount)
+	return getData(p.WeaponHomeRespectMana, respectStart, respectBitsCount)
 }
 
 func (p *GamePerson) Strength() int {
-	return getData(p.typeStrengthHealth, strengthStart, strengthBitsCount)
+	return getData(p.TypeStrengthHealth, strengthStart, strengthBitsCount)
 }
 
 func (p *GamePerson) Experience() int {
-	return getData(p.experienceLevel, experienceStart, experienceBitsCount)
+	return getData(p.ExperienceLevel, experienceStart, experienceBitsCount)
 }
 
 func (p *GamePerson) Level() int {
-	return getData(p.experienceLevel, levelStart, levelBitsCount)
+	return getData(p.ExperienceLevel, levelStart, levelBitsCount)
 }
 
 func (p *GamePerson) HasHouse() bool {
-	return getData(p.weaponHomeRespectMana, houseStart, houseBitsCount) == 1
+	return getData(p.WeaponHomeRespectMana, houseStart, houseBitsCount) == 1
 }
 
 func (p *GamePerson) HasGun() bool {
-	return getData(p.weaponHomeRespectMana, weaponStart, weaponBitsCount) == 1
+	return getData(p.WeaponHomeRespectMana, weaponStart, weaponBitsCount) == 1
 }
 
 func (p *GamePerson) HasFamilty() bool {
-	return getData(p.familyGold, familyStart, familyBitsCount) == 1
+	return getData(p.FamilyGold, familyStart, familyBitsCount) == 1
 }
 
 func (p *GamePerson) Type() int {
-	return getData(p.typeStrengthHealth, typeStart, typeBitsCount)
+	return getData(p.TypeStrengthHealth, typeStart, typeBitsCount)
 }
